@@ -1,6 +1,7 @@
-import os
 from crewai import Agent, Task, Crew, LLM
 from crewai_tools import SerperDevTool
+from pydantic import BaseModel, Field
+import os
 
 # 1. Setup API Keys
 GROQ_KEY = os.getenv("GROQ_API_KEY")
@@ -16,6 +17,12 @@ llm = LLM(
 
 # 3. Initialize Search Tools
 search_tool = SerperDevTool()
+
+class AuditScorecard(BaseModel):
+    red_tactical_score: int = Field(..., description="Score 1-100 for Red's use of stats.")
+    blue_tactical_score: int = Field(..., description="Score 1-100 for Blue's use of stats.")
+    verdict: str = Field(..., description="Must be exactly 'RED' or 'BLUE'. No ties.")
+    reasoning: str = Field(..., description="A funny, condescending explanation of why one side lost.")
 
 # AGENT 1: The "Red" Mitigator
 red_agent = Agent(
@@ -77,12 +84,13 @@ judge_task = Task(
     You are the boss—end this debate.""",
     expected_output='A formal verdict declaring a winner and providing a brief explanation of the winning logic',
     agent=Judge_agent,
-    context=[red_agent_task,blue_agent_task]
+    context=[red_agent_task,blue_agent_task],
+    output_pydantic=AuditScorecard
 )
 
 # 6. Assemble the Crew
 audit_crew = Crew(
-    agents=[red_agent,blue_agent],
+    agents=[red_agent,blue_agent, Judge_agent],
     tasks=[red_agent_task,blue_agent_task,judge_task],
     process="sequential",
     verbose=True
