@@ -57,7 +57,7 @@ Judge_agent = Agent(
     verbose=True
 )
 
-# 5. CHARMANDER
+# Task 2: CHARMANDER
 red_agent_task = Task(
     description="""Research and present the absolute best scientific and tactical arguments  
     for why Charmander is the superior starter. Focus on late-game Hyper-Carry potential (Charizard)
@@ -76,7 +76,7 @@ blue_agent_task = Task(
     agent=blue_agent,
     # context=[exploit_task] # This connects the two agents!
 )
-
+# Task 3: Judge
 judge_task = Task(
     description="""Review both the Fire Manifesto and the Hydro-Counter. 
     Look for logical fallacies, emotional bias, and tactical accuracy. 
@@ -106,5 +106,5 @@ print("="*50 + "\n")
 print(result)
 
 print("\n" + "-"*30)
-print(f"📊 BATTLE COST: {audit_crew.usage_metrics.total_tokens} tokens")
+print(f"BATTLE COST: {audit_crew.usage_metrics.total_tokens}")
 print("-"*30)
